@@ -7,7 +7,8 @@ const ProductException = require('../exceptions/product_error');
 
 exports.all_products= async (req, res, next) => {
     try{
-        const products = await db.sequelize.models.Products.getAllProducts();
+        const email = req.email;
+        const products = await db.sequelize.models.Products.getAllProducts(email);
         res.status(200).json(products);
     }catch(e){
         if (e instanceof Sequelize.ValidationError){
@@ -24,12 +25,13 @@ exports.all_products= async (req, res, next) => {
 exports.create_products= async (req, res, next) => {
     try{
         const {productName, price, shortDescription} = req.body;
+        console.log(req.email);
         const errors = validationResult(req);
         if(!errors.isEmpty() ){
             console.log(errors);
             return next(createHttpError(422,errors.array()[0].msg));
         }
-        const product = await db.sequelize.models.Products.createProduct(productName, price,shortDescription);
+        const product = await db.sequelize.models.Products.createProduct(productName, price,shortDescription, req.email);
         const response = {
             message: "Product Created successfully",
             product: product

@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static async getAllProducts(){
-      let products = await Products.findAll();
+    static async getAllProducts(email){
+      let products = await Products.findAll({where:{email}});
       if((products != null || products!= undefined) && products.length != 0 ){
         return products;
       }else{
@@ -24,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    static async createProduct(product_name, price, description) {
-      const product = await Products.create({product_name, price, description });
+    static async createProduct(product_name, price, description, email) {
+      const product = await Products.create({product_name, price, description , email});
       return product;
     }
   }

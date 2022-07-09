@@ -14,7 +14,7 @@ const app = express();
 
 (async  ()=>{
     try{
-        await db.sequelize.sync({alter: true, force: true});
+        await db.sequelize.sync({alter: true, force: false});
         console.log('...successfully connected to the database..');
     }catch(e){
         console.log(e);
