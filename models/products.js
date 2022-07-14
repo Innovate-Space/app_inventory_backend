@@ -28,6 +28,22 @@ module.exports = (sequelize, DataTypes) => {
       const product = await Products.create({product_name, price, description , email});
       return product;
     }
+
+    static async deleteProduct(id, email){
+      const product =  await Products.destroy({where: {id, email}})
+      return product
+    }
+
+    static async getSingleProduct(id, email){
+      const product =  await Products.findOne({where: {id, email}})
+      return product
+    }
+
+    static async editProduct(product_name, price, description, id, email){
+      const data = {product_name, price, description};
+      const product = await Products.update(data, {where: {id, email}});
+      return product;
+    }
   }
   Products.init({
     id: {

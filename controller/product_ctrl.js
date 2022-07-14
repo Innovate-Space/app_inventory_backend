@@ -50,3 +50,60 @@ exports.create_products= async (req, res, next) => {
         }
     }
 }
+
+exports.delete_product = async (req, res, next) => {
+    try{
+        const productId = req.params.id;
+        const product = await db.sequelize.models.Products.deleteProduct(productId, req.email);
+        res.json({product, message: 'Deleted product'})
+    }catch(e){
+        if (e instanceof Sequelize.ValidationError){
+            next(createHttpError(500, e.message || "Error encountered while dumping into the db"))
+        }else{
+            console.log(e);
+            next(e);
+        }
+    }
+}
+
+exports.edit_product = async (req, res, next) => {
+    try{
+        const productId = req.params.id;
+        const {productName, price, shortDescription} = req.body;
+        console.log(req.email);
+        const errors = validationResult(req);
+        if(!errors.isEmpty() ){
+            console.log(errors);
+            return next(createHttpError(422,errors.array()[0].msg));
+        }
+        const product = await db.sequelize.models.Products.editProduct(productName, price, shortDescription, productId, req.email);
+        res.json({product, message: 'Updated successfully'})
+    }catch(e){
+        if (e instanceof Sequelize.ValidationError){
+            next(createHttpError(500, e.message || "Error encountered while dumping into the db"))
+        }else{
+            console.log(e);
+            next(e);
+        }
+    }
+}
+
+exports.get_product = async (req, res, next) => {
+    try{
+        const productId = req.params.id;
+        const product = await db.sequelize.models.Products.getSingleProduct(productId, req.email);
+        if(product){
+            res.json({product, message: 'Product retrieved'});
+        }else{
+            res.status(404).json({message: 'Product Not found'})
+        }
+
+    }catch(e){
+        if (e instanceof Sequelize.ValidationError){
+            next(createHttpError(500, e.message || "Error encountered while dumping into the db"))
+        }else{
+            console.log(e);
+            next(e);
+        }
+    }
+}

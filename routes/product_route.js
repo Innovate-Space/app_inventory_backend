@@ -13,4 +13,14 @@ router.route('/add').post(
     c.create_products
 ).all(methodNotAllowed);
 
+router.route('/edit/:id').put(
+    body('price').isNumeric(),
+    jwtTokenVerify,
+    c.edit_product
+).all(methodNotAllowed)
+
+router.route('/remove/:id').delete(jwtTokenVerify, c.delete_product).all(methodNotAllowed);
+
+router.route('/product/:id').get(jwtTokenVerify, c.get_product).all(methodNotAllowed);
+
 module.exports = router;
